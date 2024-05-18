@@ -1,0 +1,83 @@
+//calender//
+import React, { useState } from 'react';
+import { SafeAreaView, TextInput, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { parse, format, isValid } from 'date-fns';
+
+const Test = () => {
+  const [date, setDate] = useState(new Date());
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [inputText, setInputText] = useState(format(new Date(), 'MM/dd/yyyy'));
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (selectedDate) => {
+    const formattedDate = format(selectedDate, 'MM/dd/yyyy');
+    setDate(selectedDate);
+    setInputText(formattedDate);
+    hideDatePicker();
+  };
+
+  const handleInputChange = (text) => {
+    setInputText(text);
+    const parsedDate = parse(text, 'MM/dd/yyyy', new Date());
+    if (isValid(parsedDate)) {
+      setDate(parsedDate);
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.textInput}
+          value={inputText}
+          onChangeText={handleInputChange}
+          placeholder="MM/DD/YYYY"
+        />
+        <TouchableOpacity onPress={showDatePicker} style={styles.iconContainer}>
+          <Entypo name="calendar" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  textInput: {
+    flex: 1,
+    padding: 10,
+  },
+  iconContainer: {
+    padding: 10,
+  },
+});
+
+export default Test;
